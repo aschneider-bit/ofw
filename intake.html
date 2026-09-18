@@ -6,10 +6,10 @@
 <title>Info Bank — MyFiles — Intake</title>
 <style>
   :root {
-    --ofw-navy: #1D4E7E;
-    --ofw-navy-deep: #123A61;
-    --ofw-navy-light: #3E7CB1;
-    --ofw-gold: #D8A63D;
+    --ofw-navy: #122845;
+    --ofw-navy-deep: #0A1B30;
+    --ofw-navy-light: #018ABC;
+    --ofw-gold: #D6A92D;
     --ofw-gold-pale: #FBF0DA;
     --ofw-teal: #2E9E8F;
     --ofw-magenta: #C0447A;
@@ -465,6 +465,7 @@
     { id:'s13', title:"Childcare invoices", desc:"Recent invoices from a childcare provider, if applicable.", optional:true },
     { id:'s14', title:"Child support verification", desc:"Proof of child support paid or received since the separation, if applicable.", optional:true },
   ];
+  sections.sort((a, b) => (a.optional ? 1 : 0) - (b.optional ? 1 : 0));
 
   const state = {};
   sections.forEach(section => { state[section.id] = { fileName: null }; });
