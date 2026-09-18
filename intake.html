@@ -28,7 +28,7 @@
 
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: var(--ofw-text);
     background: var(--ofw-bg);
   }
@@ -40,7 +40,7 @@
     align-items: center;
     height: 64px;
     padding: 0 24px;
-    gap: 32px;
+    gap: 20px;
   }
   .topbar .logo {
     width: 34px;
@@ -63,9 +63,10 @@
     text-decoration: none;
     font-size: 14.5px;
     font-weight: 600;
-    padding: 10px 18px;
+    padding: 10px 16px;
     border-radius: 7px;
     line-height: 1.2;
+    white-space: nowrap;
   }
   .topbar nav a.active {
     background: var(--ofw-navy-light);
@@ -316,9 +317,13 @@
 
   <div class="topbar">
     <div class="logo">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z" fill="#1D4E7E"/>
-        <circle cx="12" cy="12" r="2.4" fill="#D8A63D"/>
+      <svg viewBox="0 0 35 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M23.6602 12.2858L33.7001 6.48679L33.3802 5.93303C33.1738 5.57532 32.7164 5.4515 32.3587 5.66131L24.0042 10.4835V0.839142C24.0042 0.426403 23.6705 0.0927734 23.2578 0.0927734H22.618V11.6873C22.618 12.2204 23.1959 12.554 23.6568 12.2858" fill="#7FC8E5"/>
+        <path d="M24.1004 14.2461L34.1403 20.0451L34.4602 19.4914C34.6665 19.1337 34.5427 18.6762 34.1884 18.4698L25.8339 13.6477L34.1884 8.82551C34.5461 8.61914 34.6665 8.16169 34.4636 7.80742L34.1437 7.25366L24.1038 13.0526C23.643 13.3175 23.643 13.9847 24.1038 14.2496" fill="#7FC8E5"/>
+        <path d="M20.3583 0.839142V10.4869L12.0038 5.66475C11.646 5.45838 11.1886 5.5822 10.9822 5.93647L10.6624 6.49023L20.7022 12.2892C21.1631 12.554 21.741 12.2239 21.741 11.6907V0.0927734H21.1012C20.6885 0.0927734 20.3548 0.426403 20.3548 0.839142" fill="#7FC8E5"/>
+        <path d="M22.7006 15.4816V27.0761H23.3403C23.753 27.0761 24.0867 26.7425 24.0867 26.3297V16.6854L32.4412 21.5075C32.7989 21.7139 33.2564 21.5901 33.4627 21.2358L33.7826 20.6821L23.7393 14.8831C23.2784 14.6182 22.7006 14.9484 22.7006 15.4816" fill="#7FC8E5"/>
+        <path d="M20.2654 13.0458L10.2256 7.24683L9.90569 7.80058C9.69932 8.15829 9.82314 8.61574 10.1774 8.81867L18.5319 13.6408L0.698173 23.9318C0.340466 24.1382 0.220085 24.5956 0.426454 24.9533L0.746325 25.5071L20.2689 14.2393C20.7298 13.9745 20.7298 13.3072 20.2689 13.0389" fill="#122845"/>
+        <path d="M20.7057 14.8811L1.18311 26.1489L1.50298 26.7026C1.70935 27.0603 2.1668 27.1807 2.52451 26.9778L20.3583 16.6868V26.3311C20.3583 26.7439 20.6919 27.0775 21.1046 27.0775H21.7444V15.483C21.7444 14.9499 21.1665 14.6162 20.7057 14.8845" fill="#122845"/>
       </svg>
     </div>
     <nav>
@@ -472,6 +477,73 @@
 
   const checklistEl = document.getElementById('checklist');
 
+  function downloadWorksheet() {
+    const line = (label) => `<div class="w-field"><label>${label}</label><span class="w-blank"></span></div>`;
+    const heading = (title) => `<h2>${title}</h2>`;
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Family &amp; Case Information Worksheet</title>
+      <style>
+        body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:#1F2733;max-width:720px;margin:40px auto;padding:0 24px;}
+        h1{font-size:22px;margin-bottom:4px;}
+        p.intro{color:#6B7280;font-size:13.5px;margin-bottom:28px;}
+        h2{font-size:15px;font-weight:800;margin:28px 0 10px;border-bottom:1px solid #E3E6EA;padding-bottom:6px;}
+        .w-field{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;page-break-inside:avoid;}
+        .w-field label{font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0;min-width:280px;}
+        .w-blank{flex:1;border-bottom:1px solid #9AA1AC;height:1em;}
+        .w-note{font-size:12px;color:#6B7280;margin:-4px 0 14px;}
+        @media print{ body{margin:0;} }
+      </style></head><body>
+      <h1>Family &amp; case information worksheet</h1>
+      <p class="intro">Fill this out by hand or on screen, then upload it back in Intake. Skip anything that doesn't apply to your situation.</p>
+
+      ${heading("Co-parent information")}
+      ${line("Co-parent legal name")}${line("Co-parent email")}${line("Co-parent phone")}${line("Co-parent address")}
+
+      ${heading("Children")}
+      <div class="w-note">Copy this block for each child.</div>
+      ${line("Child's name")}${line("Date of birth")}${line("School")}${line("Grade")}${line("Primary care physician")}
+
+      ${heading("Marriage & separation")}
+      ${line("Marriage date")}${line("Marriage location")}${line("Are you separated? (yes/no)")}${line("Date you separated or stopped living together")}${line("Who has the child been living with since separation?")}
+
+      ${heading("Court & legal history")}
+      ${line("Is there a prior court order for custody or a parenting plan?")}${line("Are any custody or parenting proceedings pending anywhere else?")}${line("Has the child lived in any other state?")}
+
+      ${heading("Parentage & paternity")}
+      ${line("Were both parties present at the birth?")}${line("Is the father listed on the birth certificate?")}${line("Was a Recognition of Parentage (ROP) signed? By whom and when?")}${line("Was genetic/DNA testing done? Results?")}${line("Has paternity been established by court order in any prior proceeding?")}
+
+      ${heading("Domestic abuse & safety")}
+      ${line("Has there been physical violence, threats, stalking, or harassment between the parties?")}${line("Has either party obtained/been served an OFP or HRO? File number & county?")}${line("Is any OFP or HRO currently in effect?")}${line("Has either party been convicted of a crime against a family member?")}${line("Any third parties the other parent has safety concerns about?")}
+
+      ${heading("Mental health & chemical health")}
+      ${line("Has either parent received mental health treatment? Current providers?")}${line("Has either parent been diagnosed with a mental health condition?")}${line("Any history of chemical dependency, substance abuse, or DUI/DWI?")}${line("Any current sobriety program, AA/NA, or treatment program?")}${line("Any psychological evaluations completed?")}
+
+      ${heading("Other children")}
+      ${line("Does either parent have children from other relationships?")}${line("Are those children in the home? Their ages?")}${line("Any child support orders in place for other children?")}
+
+      ${heading("Military service")}
+      ${line("Are you currently serving or have you served in the military?")}${line("Has your co-parent served in the military?")}
+
+      ${heading("Debts")}
+      ${line("Credit card debt")}${line("Car loan")}${line("Home / mortgage")}${line("Other loans")}${line("Student loan")}
+
+      ${heading("Insurance providers")}
+      ${line("Medical insurance provider")}${line("Dental insurance provider")}${line("Homeowners / rental insurance provider")}
+
+      ${heading("Property, vehicles & business interests")}
+      <div class="w-note">List each property, vehicle, and business separately.</div>
+      ${line("Property type & address")}${line("Vehicle year / make / model / VIN")}${line("Business name & estimated value")}
+      </body></html>`;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'family-case-information-worksheet.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function renderSection(section) {
     const s = state[section.id];
     const inputId = `file-${section.id}`;
@@ -485,7 +557,7 @@
               ${section.optional ? '<span class="optional-tag">Optional</span>' : ''}
             </div>
             <div class="section-desc">${section.desc}</div>
-            ${section.downloadLabel ? `<a class="download-link" href="#" onclick="event.preventDefault();">${section.downloadLabel} ↓</a>` : ''}
+            ${section.downloadLabel ? `<a class="download-link" href="#" onclick="event.preventDefault(); downloadWorksheet();">${section.downloadLabel} ↓</a>` : ''}
             ${s.fileName ? `<div class="upload-file">Uploaded: ${s.fileName}<a href="#" onclick="event.preventDefault(); document.getElementById('${inputId}').click();">Replace file</a></div>` : ''}
           </div>
           <div class="section-action">
