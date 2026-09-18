@@ -1,1 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Info Bank — MyFiles — Intake</title>
+<style>
+  :root {
+    --ofw-navy: #1D4E7E;
+    --ofw-navy-deep: #123A61;
+    --ofw-navy-light: #3E7CB1;
+    --ofw-gold: #D8A63D;
+    --ofw-gold-pale: #FBF0DA;
+    --ofw-teal: #2E9E8F;
+    --ofw-magenta: #C0447A;
+    --ofw-green: #3E8E5C;
+    --ofw-green-pale: #EAF6EE;
+    --ofw-red: #B23A3A;
+    --ofw-bg: #F4F5F7;
+    --ofw-card: #FFFFFF;
+    --ofw-border: #E3E6EA;
+    --ofw-text: #1F2733;
+    --ofw-text-secondary: #6B7280;
+    --ofw-text-muted: #9AA1AC;
+  }
 
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ofw-text);
+    background: var(--ofw-bg);
+  }
+
+  /* ---------- Top nav ---------- */
+  .topbar {
+    background: var(--ofw-navy);
+    display: flex;
+    align-items: center;
+    height: 64px;
+    padding: 0 24px;
+    gap: 32px;
+  }
+  .topbar .logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .topbar .logo svg { width: 20px; height: 20px; }
+  .topbar nav {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+  }
+  .topbar nav a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 7px;
+    line-height: 1.2;
+  }
+  .topbar nav a.active {
+    background: var(--ofw-navy-light);
+    color: #fff;
+  }
+  .topbar .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ofw-navy-light);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--ofw-card);
+    border-right: 1px solid var(--ofw-border);
+    min-height: calc(100vh - 56px);
+    padding: 20px 0;
+  }
+  .sidebar .sidebar-title {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--ofw-text);
+    letter-spacing: -0.01em;
+    padding: 0 20px 16px;
+  }
+  .sidebar a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--ofw-text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+  }
+  .sidebar a:hover { background: #F8F9FA; }
+  .sidebar a.sub {
+    padding-left: 36px;
+    font-size: 13.5px;
+    color: var(--ofw-text-secondary);
+  }
+  .sidebar a.active {
+    border-left-color: var(--ofw-gold);
+    background: var(--ofw-gold-pale);
+    color: var(--ofw-navy);
+    font-weight: 700;
+  }
+  .sidebar a.sub.active {
+    color: var(--ofw-navy);
+  }
+  .sidebar .new-badge {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: var(--ofw-magenta);
+    border-radius: 999px;
+    padding: 2px 6px;
+    vertical-align: middle;
+  }
+
+  .main {
+    flex: 1;
+    padding: 28px 32px 60px;
+    min-width: 0;
+  }
+
+  /* ---------- Files view ---------- */
+  .files-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    margin-bottom: 24px;
+  }
+  .storage-pill { display: flex; align-items: center; gap: 10px; color: var(--ofw-text-secondary); font-size: 13.5px; white-space: nowrap; }
+  .storage-ring {
+    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+    background: conic-gradient(var(--ofw-navy-light) 0% 13%, var(--ofw-border) 13% 100%);
+    position: relative;
+  }
+  .storage-ring::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--ofw-bg); }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid var(--ofw-border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    width: 260px;
+    color: var(--ofw-text-muted);
+    font-size: 13.5px;
+  }
+  .search-box svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--ofw-text-muted); }
+  .filter-btn {
+    width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--ofw-border); background: #fff;
+    display: flex; align-items: center; justify-content: center; margin-left: 8px; flex-shrink: 0;
+  }
+  .filter-btn svg { width: 16px; height: 16px; color: var(--ofw-text-secondary); }
+  .search-row { display: flex; align-items: center; }
+  .files-list-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  .files-list-header h2 { font-size: 19px; font-weight: 800; margin: 0; }
+  .sort-control { font-size: 13.5px; color: var(--ofw-text-secondary); }
+  .sort-control span { color: var(--ofw-navy-light); font-weight: 700; }
+  .fab {
+    position: fixed; bottom: 32px; right: 32px; width: 56px; height: 56px; border-radius: 50%;
+    background: var(--ofw-navy-light); color: #fff; font-size: 26px; font-weight: 400; border: none;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: 0 6px 16px rgba(29,78,126,0.35);
+  }
+  .fab:hover { background: var(--ofw-navy); }
+  .file-card {
+    display: flex;
+    align-items: center;
+    background: var(--ofw-card);
+    border: 1px solid var(--ofw-border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    gap: 16px;
+  }
+  .file-thumb { width: 44px; height: 44px; border-radius: 6px; background: #EDEFF2; flex-shrink: 0; }
+  .file-name { font-size: 14px; font-weight: 600; }
+  .file-meta { font-size: 12.5px; color: var(--ofw-text-secondary); margin-top: 2px; }
+  .file-shared { margin-left: auto; text-align: right; font-size: 12.5px; color: var(--ofw-text-secondary); }
+  .avatars { display: flex; gap: -4px; justify-content: flex-end; margin-top: 4px; }
+  .avatar-dot {
+    width: 24px; height: 24px; border-radius: 50%; color: #fff; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; border: 2px solid #fff; margin-left: -6px;
+  }
+
+  /* ---------- Intake view ---------- */
+  .intake-header h1 { font-size: 24px; margin: 0 0 6px; }
+  .intake-header p { font-size: 14px; color: var(--ofw-text-secondary); margin: 0 0 20px; max-width: 620px; line-height: 1.5; }
+
+  .pro-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--ofw-card);
+    border: 1px solid var(--ofw-border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+  }
+  .pro-card .avatar-dot { margin-left: 0; border: none; width: 38px; height: 38px; font-size: 13px; background: var(--ofw-teal); }
+  .pro-card .pro-name { font-size: 14px; font-weight: 700; }
+  .pro-card .pro-role { font-size: 12.5px; color: var(--ofw-text-secondary); }
+
+  .progress-wrap { margin-bottom: 24px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--ofw-text-secondary); margin-bottom: 8px; }
+  .progress-track { height: 8px; border-radius: 999px; background: var(--ofw-border); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--ofw-gold); border-radius: 999px; width: 0%; transition: width 0.35s ease; }
+
+  .completion-banner {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: var(--ofw-green-pale);
+    border: 1px solid #BFE3CB;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #1F5138;
+  }
+  .completion-banner.show { display: flex; }
+  .completion-banner strong { font-weight: 700; }
+  .check-icon {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--ofw-green); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
+  }
+
+  .section-group-label {
+    font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--ofw-text-muted); margin: 24px 0 10px;
+  }
+  .section-group-label:first-child { margin-top: 0; }
+
+  /* Section cards (upload checklist rows) */
+  .section-card {
+    background: var(--ofw-card);
+    border: 1px solid var(--ofw-border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .section-card.complete { border-color: #BFE3CB; }
+  .section-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: 8px; background: #EEF2F7; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+  .section-card.complete .section-icon { background: var(--ofw-green-pale); }
+  .section-body-text { flex: 1; min-width: 0; }
+  .section-title-row { display: flex; align-items: center; gap: 8px; }
+  .section-title { font-size: 14.5px; font-weight: 700; }
+  .optional-tag {
+    font-size: 10.5px; font-weight: 700; color: var(--ofw-text-muted); border: 1px solid var(--ofw-border);
+    border-radius: 999px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .section-desc { font-size: 12.5px; color: var(--ofw-text-secondary); margin-top: 3px; line-height: 1.5; }
+  .download-link { font-size: 12.5px; font-weight: 700; color: var(--ofw-navy-light); text-decoration: none; display: inline-block; margin-top: 8px; }
+  .download-link:hover { text-decoration: underline; }
+  .upload-file { font-size: 12.5px; color: #1F5138; margin-top: 8px; font-weight: 600; }
+  .upload-file a { color: #1F5138; text-decoration: underline; font-weight: 500; margin-left: 8px; }
+
+  .section-action { flex-shrink: 0; padding-top: 2px; }
+  .btn-upload {
+    background: var(--ofw-navy); color: #fff; border: none; border-radius: 999px; padding: 9px 18px;
+    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .btn-upload:hover { background: var(--ofw-navy-deep); }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px; background: var(--ofw-green); color: #fff;
+    border-radius: 999px; padding: 8px 16px; font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  }
+  input[type="file"] { display: none; }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z" fill="#1D4E7E"/>
+        <circle cx="12" cy="12" r="2.4" fill="#D8A63D"/>
+      </svg>
+    </div>
+    <nav>
+      <a href="#">Calendar</a>
+      <a href="#">Messages</a>
+      <a href="#">Journal</a>
+      <a href="#">Expenses</a>
+      <a href="#">Calls</a>
+      <a href="#" class="active">Info Bank</a>
+    </nav>
+    <div class="avatar">AO</div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebar-title">MyFiles</div>
+      <a href="#" data-view="address">Address Book</a>
+      <a href="#" data-view="emergency">Emergency</a>
+      <a href="#" data-view="insurance">Insurance</a>
+      <a href="#" data-view="financial">Financial</a>
+      <a href="#" data-view="files" id="nav-myfiles">MyFiles</a>
+      <a href="#" data-view="files" class="sub" id="nav-allfiles">All files</a>
+      <a href="#" data-view="intake" class="sub active" id="nav-intake">Intake <span class="new-badge">NEW</span></a>
+      <a href="#" data-view="vitals">Family Vitals</a>
+      <a href="#" data-view="health">Health</a>
+      <a href="#" class="sub">Health Providers</a>
+      <a href="#" class="sub">Health Insurance</a>
+      <a href="#" data-view="education">Education</a>
+      <a href="#" class="sub">Schools</a>
+      <a href="#" class="sub">Teachers</a>
+      <a href="#" class="sub">Class Schedules</a>
+      <a href="#" data-view="activities">Activities</a>
+      <a href="#" data-view="childcare">Child Care</a>
+      <a href="#" data-view="religion">Religion</a>
+    </div>
+
+    <div class="main">
+
+      <!-- FILES VIEW -->
+      <div id="view-files" style="display:none;">
+        <div class="files-header">
+          <div class="storage-pill">
+            <div class="storage-ring"></div>
+            6.6 MB of 5.0 GB used
+          </div>
+          <div class="search-row">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Search…
+            </div>
+            <button class="filter-btn" type="button" aria-label="Filter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="files-list-header">
+          <h2>Files</h2>
+          <div class="sort-control">Sort by <span>Newest ⌵</span></div>
+        </div>
+
+        <div class="file-card">
+          <div class="file-thumb"></div>
+          <div>
+            <div class="file-name">exec-2bd62801-320a-4fea…</div>
+            <div class="file-meta">2.1 MB, added Aug 26, 2026 · Andre OFWTest-Walliver</div>
+          </div>
+          <div class="file-shared">
+            Shared
+            <div class="avatars"><div class="avatar-dot" style="background:var(--ofw-gold);">KO</div></div>
+          </div>
+        </div>
+
+        <div class="file-card">
+          <div class="file-thumb"></div>
+          <div>
+            <div class="file-name">screen_shot_2020-05-12_a…</div>
+            <div class="file-meta">2.2 MB, added May 12, 2020 · Andre OFWTest-Walliver</div>
+          </div>
+          <div class="file-shared">
+            Shared
+            <div class="avatars">
+              <div class="avatar-dot" style="background:var(--ofw-gold);">KO</div>
+              <div class="avatar-dot" style="background:var(--ofw-magenta);">JC</div>
+              <div class="avatar-dot" style="background:var(--ofw-teal);">PO</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="fab" type="button" aria-label="Add file">+</button>
+      </div>
+
+      <!-- INTAKE VIEW -->
+      <div id="view-intake">
+        <div class="intake-header">
+          <h1>Intake</h1>
+          <p>Upload the documents below so your attorney can start working on your case. Everything saves as soon as it's uploaded — you can come back and finish the rest later.</p>
+        </div>
+
+        <div class="pro-card">
+          <div class="avatar-dot">SC</div>
+          <div>
+            <div class="pro-name">Sarah Chen</div>
+            <div class="pro-role">Family law attorney · assigned to your case</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span id="progress-text">0 of 9 required uploads complete</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+
+        <div class="completion-banner" id="completion-banner">
+          <div class="check-icon">✓</div>
+          <div>All done — <strong>we've notified Sarah Chen</strong> that your intake is complete and ready for review.</div>
+        </div>
+
+        <div id="checklist"></div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // ---------- Checklist schema: every item is a document upload ----------
+  const sections = [
+    { id:'s1', title:"Government-issued ID", desc:"A driver's license, state ID, or passport we can use to verify your identity." },
+    { id:'s2', title:"Birth certificates", desc:"One for each child included in this case." },
+    { id:'s3', title:"Family & case information worksheet",
+      desc:"Covers your co-parent's contact information, your children's names/DOB/school details, your marriage & separation history, prior court proceedings, parentage, safety history, mental and chemical health history, other children, military service, your debts, insurance providers, and any property, vehicles, or business interests.",
+      downloadLabel:"Download blank worksheet (PDF)" },
+    { id:'s4', title:"Prior court orders & protective orders", desc:"Any custody orders, protective orders (OFP/HRO), or related filings, if they exist.", optional:true },
+    { id:'s5', title:"Psychological evaluation report", desc:"If a psychological evaluation has been completed for either parent.", optional:true },
+    { id:'s6', title:"Income documentation", desc:"A recent paystub, workers' compensation statement, or unemployment statement." },
+    { id:'s7', title:"Public assistance or disability verification", desc:"If either parent receives public assistance or disability benefits.", optional:true },
+    { id:'s8', title:"Tax returns", desc:"Your last 2 years of tax returns." },
+    { id:'s9', title:"Bank statements", desc:"Recent statements for your bank accounts." },
+    { id:'s10', title:"Investment & retirement statements", desc:"Stock, retirement, or 401(k) account statements." },
+    { id:'s11', title:"Spousal support verification", desc:"Proof of spousal support paid or received, from this separation or a previous marriage.", optional:true },
+    { id:'s12', title:"Health insurance card", desc:"A copy of the card used for your children's medical and dental coverage." },
+    { id:'s13', title:"Childcare invoices", desc:"Recent invoices from a childcare provider, if applicable.", optional:true },
+    { id:'s14', title:"Child support verification", desc:"Proof of child support paid or received since the separation, if applicable.", optional:true },
+  ];
+
+  const state = {};
+  sections.forEach(section => { state[section.id] = { fileName: null }; });
+
+  const checklistEl = document.getElementById('checklist');
+
+  function renderSection(section) {
+    const s = state[section.id];
+    const inputId = `file-${section.id}`;
+    return `
+      <div class="section-card ${s.fileName ? 'complete' : ''}">
+        <div class="section-row">
+          <div class="section-icon">${s.fileName ? '📄' : '📎'}</div>
+          <div class="section-body-text">
+            <div class="section-title-row">
+              <div class="section-title">${section.title}</div>
+              ${section.optional ? '<span class="optional-tag">Optional</span>' : ''}
+            </div>
+            <div class="section-desc">${section.desc}</div>
+            ${section.downloadLabel ? `<a class="download-link" href="#" onclick="event.preventDefault();">${section.downloadLabel} ↓</a>` : ''}
+            ${s.fileName ? `<div class="upload-file">Uploaded: ${s.fileName}<a href="#" onclick="event.preventDefault(); document.getElementById('${inputId}').click();">Replace file</a></div>` : ''}
+          </div>
+          <div class="section-action">
+            ${s.fileName
+              ? '<span class="status-pill">✓ Complete</span>'
+              : `<button type="button" class="btn-upload" onclick="document.getElementById('${inputId}').click();">Upload</button>`}
+            <input type="file" id="${inputId}" onchange="handleFileChange('${section.id}', this)" />
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function render() {
+    checklistEl.innerHTML = sections.map(renderSection).join('');
+    updateProgress();
+  }
+
+  function handleFileChange(sectionId, input) {
+    if (!input.files || !input.files[0]) return;
+    state[sectionId].fileName = input.files[0].name;
+    render();
+  }
+
+  function updateProgress() {
+    const required = sections.filter(sec => !sec.optional);
+    const done = required.filter(sec => state[sec.id].fileName).length;
+    const total = required.length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('progress-text').textContent = `${done} of ${total} required uploads complete`;
+    document.getElementById('progress-percent').textContent = `${pct}%`;
+    document.getElementById('progress-fill').style.width = `${pct}%`;
+    document.getElementById('completion-banner').classList.toggle('show', done === total);
+  }
+
+  render();
+
+  // Sidebar view switching (Intake vs. existing All files view)
+  document.getElementById('nav-allfiles').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('view-files').style.display = 'block';
+    document.getElementById('view-intake').style.display = 'none';
+    document.getElementById('nav-allfiles').classList.add('active');
+    document.getElementById('nav-intake').classList.remove('active');
+  });
+  document.getElementById('nav-intake').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('view-files').style.display = 'none';
+    document.getElementById('view-intake').style.display = 'block';
+    document.getElementById('nav-intake').classList.add('active');
+    document.getElementById('nav-allfiles').classList.remove('active');
+  });
+</script>
+
+</body>
+</html>
